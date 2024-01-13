@@ -1,0 +1,52 @@
+version: "3.5"
+
+services:
+  main-entry:
+    build: ./Go/
+    container_name: shopping-service
+    restart: unless-stopped
+    environment:
+      AUCTION_DB_HOST: db
+      AUCTION_DB_PORT: 5432
+      AUCTION_DB_NAME: postgres
+      AUCTION_DB_USERNAME: postgres
+      AUCTION_DB_PASSWORD: 12345
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - internet
+      - appnet
+
+  db:
+    image: postgres
+    container_name: pgdb
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "5432:5432"
+    networks:
+      - appnet
+
+  pgadmin:
+    image: dcagatay/pwless-pgadmin4:latest
+    container_name: pgadmin4
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+    ports:
+      - "8080:80"
+    networks:
+      - appnet
+
+networks:
+  internet:
+    name: internet
+    driver: bridge
+  appnet:
+    name: appnet
+    driver: bridge

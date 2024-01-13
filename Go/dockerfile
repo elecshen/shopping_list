@@ -1,0 +1,17 @@
+FROM golang:1.21.4-alpine
+#FROM golang:1.21.4 #debian
+
+WORKDIR $GOPATH/src
+COPY . .
+#RUN go get -u github.com/swaggo/swag/cmd/swag
+RUN go install -mod=mod github.com/swaggo/swag/cmd/swag
+RUN swag init -g ./cmd/main/main.go
+RUN go build -o $GOPATH/bin/main ./cmd/main/main.go
+ENV AUCTION_DB_HOST=db
+ENV AUCTION_DB_PORT=5432
+ENV AUCTION_DB_NAME=postgres
+ENV AUCTION_DB_USERNAME=postgres
+ENV AUCTION_DB_PASSWORD=12345
+ENV AUCTION_DB_SSLMODE=disable
+EXPOSE 80
+ENTRYPOINT $GOPATH/bin/main
