@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   main-entry:
-    build: ./Go/
+    build: api_serv/
     container_name: shopping-service
     restart: unless-stopped
     environment:
